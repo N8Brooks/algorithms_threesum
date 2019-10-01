@@ -55,7 +55,9 @@ def ThreeSumFastest(array: list) -> int:
     from collections import defaultdict
     from bisect import bisect_left, bisect_right
     from math import factorial
-    if not array: return 0
+    
+    # naive case
+    if len(array) < 3: return 0
     
     # count occurences of each
     c = defaultdict(int)
@@ -72,15 +74,15 @@ def ThreeSumFastest(array: list) -> int:
     if 0 in c:
         if c[0] >= 3:
             count += int(factorial(c[0]) / (6 * factorial(c[0] - 3)))
-        c[0] = 1
     
     # iterate through each unique item of array
     right = len(keys)
     for i, x in enumerate(keys):
         # handle situations where 2 values of sum are equal
         # find combinations of equal pair, multiply by count of single
-        if c[x] >= 2 and -2 * x in c:
-            pair = (factorial(c[x]) >> 1) / factorial(c[x] - 2)
+        # make sure that x isn't 0 because 0s were covered in all equal case
+        if x and c[x] >= 2 and -2 * x in c:
+            pair = int((factorial(c[x]) >> 1) / factorial(c[x] - 2))
             count += pair * c[-2 * x]
         
         # only bother with negative values you can find a positive two sum
@@ -98,6 +100,7 @@ def ThreeSumFastest(array: list) -> int:
                     count += c[x] * c[other] * c[positive]
     
     return count
+
 
 
 
