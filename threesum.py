@@ -5,7 +5,8 @@ Created on Tue Oct  1 14:53:40 2019
 @author: Nathan Brooks
 """
 
-MAX_BASE = 8
+MIN_BASE = 4
+MAX_BASE = 9
 EXPERIMENTS = 100
 
 """
@@ -142,11 +143,11 @@ if __name__ == '__main__':
     
     # timekeeping and dataframe for keeping track of records
     clock = stopwatch()
-    times = pd.DataFrame(columns=list(zip(['ThreeSumBruteForce', 'ThreeSumFast',\
-                                      'ThreeSumFastest'], ['total']*3)))
+    times = pd.DataFrame(columns=list(zip(['ThreeSumBruteForce',\
+        'ThreeSumFast', 'ThreeSumFastest'], ['total']*3)))
     
     # each order of magnitude (base 2) in range
-    for i in trange(MAX_BASE, desc='Each Base:'):
+    for i in trange(MIN_BASE, MAX_BASE, desc='Each Base:'):
         # set i, create array of numbers, make record
         i = 2**i
         row = pd.Series(name=i, index=times.columns, data=[0,0,0])
@@ -181,7 +182,8 @@ if __name__ == '__main__':
     for col in list(times):
         times[(col[0], 'avg')] = times[col].div(EXPERIMENTS)
         times[(col[0], 'ratio')] = times[col].pct_change().add(1)
-    times.columns = pd.MultiIndex.from_tuples(times.columns, names=['algorithm', 'metric'])
+    times.columns = pd.MultiIndex.from_tuples(times.columns,\
+                                              names=['algorithm', 'metric'])
     
     # this is for table of averages
     # averages = times.xs('avg', level='metric', axis=1)
@@ -199,17 +201,18 @@ if __name__ == '__main__':
         return total
     
     ans = minimize(cubic_fit, [0,0], method='Nelder-Mead')
-    times[('ThreeSumBruteForce', 'predict')] = times.index.map(lambda x: ans.x[0]+ans.x[1]*x**3)
+    times[('ThreeSumBruteForce', 'predict')] = times.index.map(lambda x:\
+          ans.x[0]+ans.x[1]*x**3)
     # plot values and predicted values
-    times['ThreeSumBruteForce'][['avg', 'predict']].plot(title='ThreeSumBruteForce')
+    times['ThreeSumBruteForce'][['avg', 'predict']].plot(title=\
+         'ThreeSumBruteForce')
     plt.show()
     
     # this is O(n^2log(n)) for the BruteForceFast
     # same idea for the regression, added abs for b to prevent domain errors
     def quad_log_fit(args):
         y, a, b = args
-        b = abs(b)
-        if b == 0: b += 0.000001
+        b = max(0.000001, abs(b))
         total = 0
         for i, x in times[('ThreeSumFast', 'avg')].iteritems():
             total += (x - (y + a*(i**2)*math.log(i, b)))**2
@@ -217,7 +220,9 @@ if __name__ == '__main__':
     
     ans = minimize(quad_log_fit, [0,0,0], method='Nelder-Mead')
     y, a, b = ans.x
-    times[('ThreeSumFast', 'predict')] = times.index.map(lambda x: (y + a*(x**2)*math.log(x, b)))
+    b = max(0.000001, abs(b))
+    times[('ThreeSumFast', 'predict')] = times.index.map(lambda x: (y +\
+          a*(x**2)*math.log(x, b)))
     # plot values and predicted values
     times['ThreeSumFast'][['avg', 'predict']].plot(title='ThreeSumFast')
     plt.show()
@@ -233,17 +238,21 @@ if __name__ == '__main__':
     
     ans = minimize(quad_fit, [0,0], method='Nelder-Mead')
     y, a = ans.x
-    times[('ThreeSumFastest', 'predict')] = times.index.map(lambda x: (y + a*(x**2)))
+    times[('ThreeSumFastest', 'predict')] = times.index.map(lambda x:\
+          (y + a*(x**2)))
     # plot expected values and real values
     times['ThreeSumFastest'][['avg', 'predict']].plot(title='ThreeSumFastest')
     plt.show()
 
     # here is where  log-linear plots are printed
-    times['ThreeSumBruteForce'][['avg', 'predict']].plot(title='ThreeSumBruteForce', logy=True)
+    times['ThreeSumBruteForce'][['avg', 'predict']].plot(title=\
+         'ThreeSumBruteForce', logy=True)
     plt.show()
-    times['ThreeSumFast'][['avg', 'predict']].plot(title='ThreeSumFast', logy=True)
+    times['ThreeSumFast'][['avg', 'predict']].plot(title='ThreeSumFast',\
+         logy=True)
     plt.show()
-    times['ThreeSumFastest'][['avg', 'predict']].plot(title='ThreeSumFastest', logy=True)
+    times['ThreeSumFastest'][['avg', 'predict']].plot(title='ThreeSumFastest',\
+         logy=True)
     plt.show()
 
 
