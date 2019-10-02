@@ -1,8 +1,8 @@
 Threesum Comparison
 
 
-The threesum problem is where you count the combinations of a list of 
-	integers that sum to 0.
+The threesum problem is where you count the 3 integers combinations
+	of a list of integers that sum to 0.
 
 	
 This is a comparison of the following algorithms for the threesum problem:
