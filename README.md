@@ -25,14 +25,13 @@ Drivercode in threesum.py
 * Times each function for various list lengths, outputs progress bar
 * Creates a regression for each function plot points
 * Plots one linear-linear plot for each function's actual values and 
-	predict values
+	predict values (example below)
 * Plots one log-linear plot for each function's actual values and 
 	predict values
 
-	
-Example Plot:
 
 ![](ThreeSumFastExamplePlot.png)
+
 
 VerifyThreeSum function
 * This function has a few test cases to verify functionality.
@@ -47,4 +46,4 @@ Requires the following python packages:
 * pandas
 
 
-Project Status: Complete - no future work planned
+Project Status: Complete - no future work planned.
