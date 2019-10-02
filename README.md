@@ -21,6 +21,7 @@ The following functions are passed a list and return the threesum:
 Drivercode in threesum.py
 * Edit the following variables to change funcationality:
 	* EXPERIMENTS	changes how many times function is run per loop
+	* MIN_BASE		list_length is doubled each loop from 2^MIN_BASE
 	* MAX_BASE		list_length is doubled each loop up to 2^MAX_BASE
 * Times each function for various list lengths, outputs progress bar
 * Creates a regression for each function plot points
